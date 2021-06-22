@@ -32,9 +32,16 @@ class PostController extends ControllerBase
     $post = new Post();
     $post
       ->fromArray($this->request->read())
-      ->setAuthor($this?->user)
-      ->create($this->database);
-    $this->response->setStatus(204)->send();
+      ->setAuthor($this?->user);
+    if (!empty($post->getContent())) {
+      $post->create($this->database);
+      $this->response->setStatus(204)->send();
+    } else {
+      $this->response
+        ->setStatus(400)
+        ->setBody("Bad Request")
+        ->send();
+    }
   }
 
   public function DELETEAction(): void

@@ -41,7 +41,7 @@ class User extends ModelBase implements ModelInterface
     $stmt = $db_instance->getClient()->prepare(
       'INSERT INTO `users`(`identity`, `display_name`, `device`, `ip_addr`, `created_time`) VALUES (:identity, :display_name, :device, :ip_addr, UNIX_TIMESTAMP())'
     );
-    $db_instance->bindParams($stmt, $this->toArray());
+    $db_instance->bindParamsObject($stmt, $this->toArray());
     return $stmt->execute();
   }
 
@@ -50,7 +50,7 @@ class User extends ModelBase implements ModelInterface
     $stmt = $db_instance->getClient()->prepare(
       'UPDATE `users` SET `display_name` = :display_name WHERE `identity` = :identity'
     );
-    $db_instance->bindParams($stmt, $this->toArray());
+    $db_instance->bindParamsSafe($stmt, $this->toArray(), ["display_name", "identity"]);
     return $stmt->execute();
   }
 

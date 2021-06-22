@@ -1,9 +1,9 @@
 <template>
   <v-card class="text-center">
     <v-form>
-      <v-textarea v-model="content" class="blockquote" />
-      <v-btn color="secondary" nuxt to="/inspire">Cancel</v-btn>
-      <v-btn color="primary" nuxt to="/inspire">Post</v-btn>
+      <v-textarea v-model="article.content" class="blockquote" />
+      <v-btn color="grey" nuxt to="/">Cancel</v-btn>
+      <v-btn color="primary" @click="create">Post</v-btn>
     </v-form>
   </v-card>
 </template>
@@ -17,7 +17,7 @@ export default {
   }),
   methods: {
     create() {
-      this.$axios.$post('api/post.php', this.article)
+      this.$axios.$post('post.php', this.article)
     },
   },
 }

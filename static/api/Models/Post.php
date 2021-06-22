@@ -47,7 +47,7 @@ class Post extends ModelBase implements ModelInterface
     $stmt = $db_instance->getClient()->prepare(
       'INSERT INTO `posts`(`uuid`, `author`, `content`, `created_time`, `parent`) VALUES (UUID(), :author, :content, UNIX_TIMESTAMP(), :parent)'
     );
-    $db_instance->bindParams($stmt, $this->toArray());
+    $db_instance->bindParamsSafe($stmt, $this->toArray(), ["author", "content", "parent"]);
     return $stmt->execute();
   }
 
@@ -59,7 +59,7 @@ class Post extends ModelBase implements ModelInterface
     $stmt = $db_instance->getClient()->prepare(
       'UPDATE `posts` SET `content` = :content, `modified_time` = UNIX_TIMESTAMP() WHERE `uuid` = :uuid'
     );
-    $db_instance->bindParams($stmt, $this->toArray());
+    $db_instance->bindParamsSafe($stmt, $this->toArray(), ["content", "uuid"]);
     return $stmt->execute();
   }
 
@@ -85,6 +85,14 @@ class Post extends ModelBase implements ModelInterface
     $this->author = new User();
     $this->author->load($db_instance, $query);
     return $this;
+  }
+
+  /**
+   * @return string
+   */
+  public function getContent(): string
+  {
+    return $this->content;
   }
 
   /**

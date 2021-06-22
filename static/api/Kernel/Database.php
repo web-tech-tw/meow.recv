@@ -22,10 +22,17 @@ class Database
     return $this->client;
   }
 
-  public static function bindParams(object $stmt, array $data)
+  public static function bindParamsObject(object $stmt, array $data)
   {
     foreach ($data as $key => &$value) {
       $stmt->bindParam(":$key", $value);
+    }
+  }
+
+  public static function bindParamsSafe(object $stmt, array $data, array $fields)
+  {
+    foreach ($fields as $key) {
+      $stmt->bindParam(":$key", $data[$key]);
     }
   }
 }
