@@ -24,8 +24,6 @@ class User extends ModelBase implements ModelInterface
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (count($result) === 1) {
       $this->fromArray($result[0]);
-    } else {
-      throw new Exception("The user $filter is not found.");
     }
     return $this;
   }

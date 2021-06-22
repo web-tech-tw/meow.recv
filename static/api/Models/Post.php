@@ -27,8 +27,6 @@ class Post extends ModelBase implements ModelInterface
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (count($result) === 1) {
       $this->fromArray($result[0]);
-    } else {
-      throw new Exception("The post $filter is not found.");
     }
     return $this;
   }
