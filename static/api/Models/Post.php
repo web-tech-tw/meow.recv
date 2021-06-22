@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/ModelBase.php';
+require_once __DIR__ . '/User.php';
 
 class Post extends ModelBase implements ModelInterface
 {
@@ -61,5 +62,15 @@ class Post extends ModelBase implements ModelInterface
       'DELETE FROM `posts` WHERE `uuid` = ?'
     );
     return $stmt->execute([$this->uuid]);
+  }
+
+  /**
+   * @param string $author
+   * @return Post
+   */
+  public function setAuthor(User $author): static
+  {
+    $this->author = $author->identity;
+    return $this;
   }
 }
