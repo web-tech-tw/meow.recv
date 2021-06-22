@@ -11,17 +11,18 @@ class Authentication implements MiddlewareInterface
 
   public static function createNewUser(ControllerInterface $controller): bool
   {
+    $timestamp = time();
     try {
-      $seed = random_bytes(32) . time();
+      $seed = random_bytes(32) . $timestamp;
     } catch (Exception $exception) {
-      $seed = rand(0, 4096) . time();
+      $seed = rand(0, 4096) . $timestamp;
       error_log($exception->getMessage());
     }
     $identity = hash("sha256", $seed);
     $controller->response->setCookie(
       self::ACCESS_COOKIE,
       $identity,
-      self::ACCESS_COOKIE_EXPIRES
+      $timestamp + self::ACCESS_COOKIE_EXPIRES
     );
     return $controller->user
       ->setIdentity($identity)

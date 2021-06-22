@@ -18,11 +18,15 @@ class User extends ModelBase implements ModelInterface
   {
     assert(is_string($filter), new Error("Argument #2 should be string"));
     $stmt = $db_instance->getClient()->prepare(
-      'SELECT `display_name`, `device`, `ip_addr`, `created_time` FROM `users` WHERE `identity` = ?'
+      'SELECT `identity`, `display_name`, `device`, `ip_addr`, `created_time` FROM `users` WHERE `identity` = ?'
     );
     $stmt->execute([$filter]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $this->fromArray($result);
+    if (count($result) === 1) {
+      $this->fromArray($result[0]);
+    } else {
+      throw new Exception("The user $filter is not found.");
+    }
     return $this;
   }
 
