@@ -9,6 +9,7 @@ class Post extends ModelBase implements ModelInterface
   public string $author;
   public string $content;
   public int $created_time;
+  public ?int $modified_time;
   public ?string $parent;
 
   public function checkReady(): bool
@@ -20,7 +21,7 @@ class Post extends ModelBase implements ModelInterface
   {
     assert(is_string($filter), new Error("Argument #2 should be string"));
     $stmt = $db_instance->getClient()->prepare(
-      'SELECT `uuid`, `author`, `created_time`, `content`, `parent` FROM `posts` WHERE `uuid` = ?'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time`, `parent` FROM `posts` WHERE `uuid` = ?'
     );
     $stmt->execute([$filter]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -65,7 +66,7 @@ class Post extends ModelBase implements ModelInterface
   }
 
   /**
-   * @param string $author
+   * @param User $author
    * @return Post
    */
   public function setAuthor(User $author): static
