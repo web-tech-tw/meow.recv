@@ -7,6 +7,8 @@ class Response
   private int $status = 200;
   private mixed $body;
 
+  private const COOKIES_ROOT = "/";
+
   public function setStatus(int $status): static
   {
     $this->status = $status;
@@ -16,6 +18,17 @@ class Response
   public function setBody(mixed $body): static
   {
     $this->body = $body;
+    return $this;
+  }
+
+  public function setCookie(string $key, string $value, int $expires): static
+  {
+    setcookie($key, $value, [
+      "expires" => $expires,
+      'path' => self::COOKIES_ROOT,
+      'httponly' => true,
+      'samesite' => 'Strict'
+    ]);
     return $this;
   }
 

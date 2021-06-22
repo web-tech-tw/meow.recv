@@ -4,13 +4,13 @@
 
 interface ModelInterface
 {
-  public function load(Database $db_instance, string $uuid): static;
+  public function load(Database $db_instance, mixed $filter): static;
 
   public function reload(Database $db_instance): static;
 
   public function create(Database $db_instance): bool;
 
-  public function modify(Database $db_instance): bool;
+  public function replace(Database $db_instance): bool;
 
   public function destroy(Database $db_instance): bool;
 

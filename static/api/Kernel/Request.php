@@ -5,12 +5,16 @@
 class Request
 {
   private string $request_uri;
+  private string $ip_addr;
+  private string $user_agent;
   private string $method;
   private string $body;
 
   public function __construct()
   {
     $this->request_uri = $_SERVER["REQUEST_URI"];
+    $this->ip_addr = $_SERVER["REMOTE_ADDR"];
+    $this->user_agent = $_SERVER["HTTP_USER_AGENT"];
     $this->method = $_SERVER["REQUEST_METHOD"];
     $this->body = file_get_contents("php://input");
   }
@@ -21,6 +25,22 @@ class Request
   public function getRequestUri(): string
   {
     return $this->request_uri;
+  }
+
+  /**
+   * @return string
+   */
+  public function getIpAddr(): string
+  {
+    return $this->ip_addr;
+  }
+
+  /**
+   * @return string
+   */
+  public function getUserAgent(): string
+  {
+    return $this->user_agent;
   }
 
   /**
@@ -42,6 +62,11 @@ class Request
   public function getQuery(string $key): string
   {
     return $_GET[$key] ?? "";
+  }
+
+  public function getCookie(string $key): string
+  {
+    return $_COOKIE[$key] ?? "";
   }
 
   public function readForm(): array

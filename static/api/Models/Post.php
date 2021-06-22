@@ -2,20 +2,21 @@
 
 require_once __DIR__ . '/ModelBase.php';
 
-class Post extends ModelBase implements JsonSerializable
+class Post extends ModelBase implements ModelInterface
 {
   private string $uuid;
   private string $author;
   private string $content;
-  private ?string $parent;
   private int $created_time;
+  private ?string $parent;
 
-  public function load(Database $db_instance, string $uuid): static
+  public function load(Database $db_instance, mixed $filter): static
   {
+    assert(is_string($filter), new Error("Argument #2 should be string"));
     $stmt = $db_instance->getClient()->prepare(
-      'SELECT `uuid`, `author`, `content`, `parent` FROM `posts` WHERE `uuid` = ?'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `parent` FROM `posts` WHERE `uuid` = ?'
     );
-    $stmt->execute([$uuid]);
+    $stmt->execute([$filter]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $this->fromArray($result);
     return $this;
@@ -30,16 +31,16 @@ class Post extends ModelBase implements JsonSerializable
   public function create(Database $db_instance): bool
   {
     $stmt = $db_instance->getClient()->prepare(
-      'INSERT INTO `posts`(`uuid`, `author`, `content`, `parent`) VALUES (UUID(), :author, :content, :parent)'
+      'INSERT INTO `posts`(`uuid`, `author`, `content`, `created_time`, `parent`) VALUES (UUID(), :author, :content, UNIX_TIMESTAMP(), :parent)'
     );
     $db_instance->bindParams($stmt, $this->toArray());
     return $stmt->execute();
   }
 
-  public function modify(Database $db_instance): bool
+  public function replace(Database $db_instance): bool
   {
     $stmt = $db_instance->getClient()->prepare(
-      'UPDATE `posts` SET `content` = :content WHERE `uuid` = :uuid'
+      'UPDATE `posts` SET `content` = :content, `modified_time` = UNIX_TIMESTAMP() WHERE `uuid` = :uuid'
     );
     $db_instance->bindParams($stmt, $this->toArray());
     return $stmt->execute();
@@ -48,7 +49,7 @@ class Post extends ModelBase implements JsonSerializable
   public function destroy(Database $db_instance): bool
   {
     $stmt = $db_instance->getClient()->prepare(
-      'DELETE FROM `posts` WHERE uuid = ?'
+      'DELETE FROM `posts` WHERE `uuid` = ?'
     );
     return $stmt->execute([$this->uuid]);
   }

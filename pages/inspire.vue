@@ -1,15 +1,24 @@
 <template>
-  <v-row>
-    <v-col class="text-center">
-      <img src="/v.png" alt="Vuetify.js" class="mb-5" />
-      <blockquote class="blockquote">
-        &#8220;First, solve the problem. Then, write the code.&#8221;
-        <footer>
-          <small>
-            <em>&mdash;John Johnson</em>
-          </small>
-        </footer>
-      </blockquote>
-    </v-col>
-  </v-row>
+  <v-card class="text-center">
+    <v-form>
+      <v-textarea v-model="content" class="blockquote" />
+      <v-btn color="secondary" nuxt to="/inspire">Cancel</v-btn>
+      <v-btn color="primary" nuxt to="/inspire">Post</v-btn>
+    </v-form>
+  </v-card>
 </template>
+
+<script>
+export default {
+  data: () => ({
+    article: {
+      content: '',
+    },
+  }),
+  methods: {
+    create() {
+      this.$axios.$post('api/post.php', this.article)
+    },
+  },
+}
+</script>
