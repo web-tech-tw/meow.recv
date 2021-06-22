@@ -72,7 +72,6 @@ class Post extends ModelBase implements ModelInterface
   /**
    * @param Database $db_instance
    * @return Post
-   * @throws Exception
    */
   public function loadAuthor(Database $db_instance): static
   {
