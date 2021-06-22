@@ -25,7 +25,7 @@ class Database
   public static function bindParams(object $stmt, array $data)
   {
     foreach ($data as $key => $value) {
-      $stmt->bindParam($key, $value);
+      $stmt->bindParam(":$key", $value);
     }
   }
 }
