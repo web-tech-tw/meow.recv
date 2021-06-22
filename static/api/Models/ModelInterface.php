@@ -4,6 +4,8 @@
 
 interface ModelInterface
 {
+  public function checkReady(): bool;
+
   public function load(Database $db_instance, mixed $filter): static;
 
   public function reload(Database $db_instance): static;

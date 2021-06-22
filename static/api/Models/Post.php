@@ -4,11 +4,16 @@ require_once __DIR__ . '/ModelBase.php';
 
 class Post extends ModelBase implements ModelInterface
 {
-  private string $uuid;
-  private string $author;
-  private string $content;
-  private int $created_time;
-  private ?string $parent;
+  public string $uuid;
+  public string $author;
+  public string $content;
+  public int $created_time;
+  public ?string $parent;
+
+  public function checkReady(): bool
+  {
+    return isset($this->uuid);
+  }
 
   public function load(Database $db_instance, mixed $filter): static
   {
