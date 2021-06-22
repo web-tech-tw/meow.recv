@@ -17,7 +17,7 @@ class PostController extends ControllerBase
     $post = new Post();
     $uuid = $this->request->getQuery("uuid");
     if (!empty($uuid)) {
-      $post->load($this->database, $uuid);
+      $post->load($this->database, $uuid)->loadAuthor($this->database);
       $this->response->setBody($post)->sendJSON();
     } else {
       $this->response
