@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/ModelBase.php';
+
 class Post extends ModelBase implements JsonSerializable
 {
   private string $uuid;
@@ -13,7 +15,7 @@ class Post extends ModelBase implements JsonSerializable
     $stmt = $db_instance->getClient()->prepare(
       'SELECT `uuid`, `author`, `content`, `parent` FROM `posts` WHERE `uuid` = ?'
     );
-    $stmt->execute($uuid);
+    $stmt->execute([$uuid]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $this->fromArray($result);
     return $this;
@@ -48,6 +50,6 @@ class Post extends ModelBase implements JsonSerializable
     $stmt = $db_instance->getClient()->prepare(
       'DELETE FROM `posts` WHERE uuid = ?'
     );
-    return $stmt->execute($this->uuid);
+    return $stmt->execute([$this->uuid]);
   }
 }

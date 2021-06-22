@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Models/Post.php';
+require_once __DIR__ . '/ControllerBase.php';
 
 class PostController extends ControllerBase
 {
@@ -9,14 +10,14 @@ class PostController extends ControllerBase
     parent::__construct();
   }
 
-  private function GETAction(): void
+  public function GETAction(): void
   {
     $post = new Post();
     $post->load($this->database, $this->request->getQuery("uuid"));
     $this->response->setBody($post)->sendJSON();
   }
 
-  private function POSTAction(): void
+  public function POSTAction(): void
   {
     $post = new Post();
     $post
@@ -25,7 +26,7 @@ class PostController extends ControllerBase
     $this->response->setStatus(204)->send();
   }
 
-  private function DELETEAction(): void
+  public function DELETEAction(): void
   {
     $post = new Post();
     $post->load($this->database, $this->request->getQuery("uuid"))->destroy();

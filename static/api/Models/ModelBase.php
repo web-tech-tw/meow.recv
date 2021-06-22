@@ -2,6 +2,8 @@
 // Justin PHP Framework
 // (c)2021 SuperSonic(https://randychen.tk)
 
+require_once __DIR__ . '/ModelInterface.php';
+
 use JetBrains\PhpStorm\Pure;
 
 class ModelBase implements ModelInterface
@@ -45,8 +47,9 @@ class ModelBase implements ModelInterface
   }
 
   #[Pure]
-  public function jsonSerialize(): array
+  public function jsonSerialize(): ?array
   {
-    return $this->toArray();
+    $result = $this->toArray();
+    return !empty($result) ? $result : null;
   }
 }

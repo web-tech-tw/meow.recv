@@ -26,9 +26,8 @@ class ControllerBase implements ControllerInterface
   public function trigger(): void
   {
     $method = $this->request->getMethod();
-    $controller_base = self::class;
-    if (function_exists("$controller_base::{$method}Action")) {
-      call_user_func("$controller_base::{$method}Action");
+    if (method_exists($this, "{$method}Action")) {
+      $this->{"{$method}Action"}();
     } else {
       http_response_code(405);
       echo "Method Not Allowed";

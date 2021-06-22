@@ -2,7 +2,7 @@
 // Justin PHP Framework
 // (c)2021 SuperSonic(https://randychen.tk)
 
-require_once __DIR__ . "/Config.php";
+require_once __DIR__ . '/Config.php';
 
 class Database
 {
