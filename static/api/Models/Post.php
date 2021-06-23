@@ -11,6 +11,7 @@ class Post extends ModelBase implements ModelInterface
   public int $created_time;
   public ?int $modified_time;
   public ?string $parent;
+  public ?array $children;
 
   public function checkReady(): bool
   {
@@ -81,6 +82,29 @@ class Post extends ModelBase implements ModelInterface
     $query = $this->author;
     $this->author = new User();
     $this->author->load($db_instance, $query);
+    return $this;
+  }
+
+  /**
+   * @param Database $db_instance
+   * @return Post
+   */
+  public function loadChildren(Database $db_instance): static
+  {
+    if (isset($this->children)) {
+      return $this;
+    }
+    $stmt = $db_instance->getClient()->prepare(
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` = ?'
+    );
+    $stmt->execute([$this->uuid]);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $this->children = array_map(function ($item) use ($db_instance) {
+      $post = new Post();
+      $post->fromArray($item);
+      $post->loadAuthor($db_instance);
+      return $post;
+    }, $result);
     return $this;
   }
 

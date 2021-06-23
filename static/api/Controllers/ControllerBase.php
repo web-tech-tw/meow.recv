@@ -7,7 +7,6 @@ require_once __DIR__ . '/../Kernel/Database.php';
 require_once __DIR__ . '/../Kernel/Request.php';
 require_once __DIR__ . '/../Kernel/Response.php';
 require_once __DIR__ . '/ControllerInterface.php';
-require_once __DIR__ . '/../Middlewares/Authentication.php';
 
 class ControllerBase implements ControllerInterface
 {
@@ -15,8 +14,8 @@ class ControllerBase implements ControllerInterface
   public Response $response;
   public Config $config;
   public Database $database;
-  public array $middlewares_before;
-  public array $middlewares_after;
+  public array $middlewares_before = [];
+  public array $middlewares_after = [];
 
   public function __construct()
   {
@@ -24,10 +23,13 @@ class ControllerBase implements ControllerInterface
     $this->response = new Response();
     $this->config = new Config();
     $this->database = new Database($this->config);
-    $this->middlewares_before = [
-      "Authentication"
-    ];
-    $this->middlewares_after = [];
+  }
+
+  public function insertMiddleware(bool $type, string $task): static
+  {
+    $middlewares = [&$this->middlewares_before, &$this->middlewares_after];
+    array_push($middlewares[(int)($type)], $task);
+    return $this;
   }
 
   public function trigger(): void

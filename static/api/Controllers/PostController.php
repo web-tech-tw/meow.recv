@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../Models/Post.php';
 require_once __DIR__ . '/ControllerBase.php';
+require_once __DIR__ . '/../Middlewares/Authentication.php';
 
 class PostController extends ControllerBase
 {
@@ -10,6 +11,7 @@ class PostController extends ControllerBase
   public function __construct()
   {
     parent::__construct();
+    $this->insertMiddleware(false, "Authentication");
   }
 
   public function GETAction(): void
@@ -19,7 +21,7 @@ class PostController extends ControllerBase
     if (!empty($uuid)) {
       $post->load($this->database, $uuid);
       if ($post->checkReady()) {
-        $post->loadAuthor($this->database);
+        $post->loadAuthor($this->database)->loadChildren($this->database);
         $this->response->setBody($post)->sendJSON();
       } else {
         $this->response

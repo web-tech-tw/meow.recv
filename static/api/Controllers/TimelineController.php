@@ -13,13 +13,15 @@ class TimelineController extends ControllerBase
   public function GETAction(): void
   {
     $stmt = $this->database->getClient()->prepare(
-      'SELECT `uuid`, `author`, `content`, `parent` FROM `posts`'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` IS NULL'
     );
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $posts = array_map(function ($item) {
       $post = new Post();
-      return $post->fromArray($item);
+      $post->fromArray($item);
+      $post->loadAuthor($this->database);
+      return $post;
     }, $result);
     $this->response->setBody($posts)->sendJSON();
   }
