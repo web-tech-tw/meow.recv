@@ -8,6 +8,7 @@ class User extends ModelBase implements ModelInterface
   public string $device;
   public string $ip_addr;
   public string $created_time;
+  public string $access_token;
 
   public function checkReady(): bool
   {
@@ -16,11 +17,13 @@ class User extends ModelBase implements ModelInterface
 
   public function load(Database $db_instance, mixed $filter): static
   {
-    assert(is_string($filter), new Error("Argument #2 should be string"));
+    assert(is_array($filter) && count($filter) === 2, new Error("Argument #2 should be array, and count should be 2"));
     $stmt = $db_instance->getClient()->prepare(
-      'SELECT `identity`, `display_name`, `device`, `ip_addr`, `created_time` FROM `users` WHERE `identity` = ?'
+      $filter[0] ?
+        'SELECT `identity`, `display_name`, `device`, `ip_addr`, `created_time` FROM `users` WHERE `access_token` = ?' :
+        'SELECT `identity`, `display_name`, `device`, `ip_addr`, `created_time` FROM `users` WHERE `identity` = ?'
     );
-    $stmt->execute([$filter]);
+    $stmt->execute([$filter[1]]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (count($result) === 1) {
       $this->fromArray($result[0]);
@@ -37,9 +40,9 @@ class User extends ModelBase implements ModelInterface
   public function create(Database $db_instance): bool
   {
     $stmt = $db_instance->getClient()->prepare(
-      'INSERT INTO `users`(`identity`, `display_name`, `device`, `ip_addr`, `created_time`) VALUES (:identity, :display_name, :device, :ip_addr, UNIX_TIMESTAMP())'
+      'INSERT INTO `users`(`identity`, `display_name`, `device`, `ip_addr`, `created_time`, `access_token`) VALUES (:identity, :display_name, :device, :ip_addr, UNIX_TIMESTAMP(), :access_token)'
     );
-    $db_instance->bindParamsObject($stmt, $this->toArray());
+    $db_instance->bindParamsFilled($stmt, $this->toArray());
     return $stmt->execute();
   }
 
@@ -105,6 +108,16 @@ class User extends ModelBase implements ModelInterface
   public function setIpAddr(string $ip_addr): static
   {
     $this->ip_addr = $ip_addr;
+    return $this;
+  }
+
+  /**
+   * @param string $access_token
+   * @return User
+   */
+  public function setAccessToken(string $access_token): static
+  {
+    $this->access_token = $access_token;
     return $this;
   }
 }

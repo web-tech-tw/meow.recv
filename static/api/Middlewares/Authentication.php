@@ -19,13 +19,15 @@ class Authentication implements MiddlewareInterface
       error_log($exception->getMessage());
     }
     $identity = hash("sha256", $seed);
+    $access_token = hash("sha256", $seed . $timestamp . $seed);
     $controller->response->setCookie(
       self::ACCESS_COOKIE,
-      $identity,
+      $access_token,
       $timestamp + self::ACCESS_COOKIE_EXPIRES
     );
     return $controller->user
       ->setIdentity($identity)
+      ->setAccessToken($access_token)
       ->setDisplayName($controller->request->getIpAddr())
       ->setIpAddr($controller->request->getIpAddr())
       ->setDevice($controller->request->getUserAgent())
@@ -36,7 +38,7 @@ class Authentication implements MiddlewareInterface
   {
     $identity = $controller->request->getCookie(self::ACCESS_COOKIE);
     $controller->user = new User();
-    $controller->user->load($controller->database, $identity);
+    $controller->user->load($controller->database, [true, $identity]);
     if (!$controller->user->checkReady()) {
       self::createNewUser($controller);
     }

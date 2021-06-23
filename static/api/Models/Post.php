@@ -81,7 +81,7 @@ class Post extends ModelBase implements ModelInterface
     }
     $query = $this->author;
     $this->author = new User();
-    $this->author->load($db_instance, $query);
+    $this->author->load($db_instance, [false, $query]);
     return $this;
   }
 
