@@ -20,7 +20,7 @@ class Post extends ModelBase implements ModelInterface
 
   public function load(Database $db_instance, mixed $filter): static
   {
-    assert(is_string($filter), new Error("Argument #2 should be string"));
+    assert(is_string($filter), new AssertionError("Argument #2 should be string"));
     $stmt = $db_instance->getClient()->prepare(
       'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time`, `parent` FROM `posts` WHERE `uuid` = ?'
     );

@@ -10,12 +10,12 @@ require_once __DIR__ . '/ControllerInterface.php';
 
 class ControllerBase implements ControllerInterface
 {
-  public Request $request;
-  public Response $response;
-  public Config $config;
-  public Database $database;
-  public array $middlewares_before = [];
-  public array $middlewares_after = [];
+  protected Request $request;
+  protected Response $response;
+  protected Config $config;
+  protected Database $database;
+  private array $middlewares_before = [];
+  private array $middlewares_after = [];
 
   public function __construct()
   {
@@ -23,6 +23,38 @@ class ControllerBase implements ControllerInterface
     $this->response = new Response();
     $this->config = new Config();
     $this->database = new Database($this->config);
+  }
+
+  /**
+   * @return Request
+   */
+  public function getRequest(): Request
+  {
+    return $this->request;
+  }
+
+  /**
+   * @return Response
+   */
+  public function getResponse(): Response
+  {
+    return $this->response;
+  }
+
+  /**
+   * @return Config
+   */
+  public function getConfig(): Config
+  {
+    return $this->config;
+  }
+
+  /**
+   * @return Database
+   */
+  public function getDatabase(): Database
+  {
+    return $this->database;
   }
 
   public function insertMiddleware(bool $type, string $task): static

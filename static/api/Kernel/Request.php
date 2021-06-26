@@ -30,7 +30,7 @@ class Request
   /**
    * @return string
    */
-  public function getIpAddr(): string
+  public function getRemoteIp(): string
   {
     return $this->ip_addr;
   }
@@ -67,6 +67,19 @@ class Request
   public function getCookie(string $key): string
   {
     return $_COOKIE[$key] ?? "";
+  }
+
+  public function assertKeysInData(Response $response, array|string $key, array $data): void
+  {
+    $key = is_array($key) ? $key : [$key];
+    $result = array_filter($key, fn($name) => !array_key_exists($name, $data));
+    if (empty($result)) return;
+    $response->setStatus(400)->setBody([
+      "status" => 400,
+      "message" => "Bad Request",
+      "reason" => "Missing the argument(s)",
+      "missing" => $result
+    ])->sendJSON(true);
   }
 
   public function readForm(): array

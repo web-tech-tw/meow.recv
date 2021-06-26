@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Middlewares/Authentication.php';
 
 class PostController extends ControllerBase
 {
-  public User $user;
+  public ?User $user;
 
   public function __construct()
   {
@@ -24,16 +24,10 @@ class PostController extends ControllerBase
         $post->loadAuthor($this->database)->loadChildren($this->database);
         $this->response->setBody($post)->sendJSON();
       } else {
-        $this->response
-          ->setStatus(404)
-          ->setBody("Not Found")
-          ->send();
+        $this->response->setStatus(404)->setBody("Not Found")->send();
       }
     } else {
-      $this->response
-        ->setStatus(400)
-        ->setBody("Bad Request")
-        ->send();
+      $this->response->setStatus(400)->setBody("Bad Request")->send();
     }
   }
 
@@ -47,17 +41,16 @@ class PostController extends ControllerBase
       $post->create($this->database);
       $this->response->setStatus(204)->send();
     } else {
-      $this->response
-        ->setStatus(400)
-        ->setBody("Bad Request")
-        ->send();
+      $this->response->setStatus(400)->setBody("Bad Request")->send();
     }
   }
 
   public function DELETEAction(): void
   {
     $post = new Post();
-    $post->load($this->database, $this->request->getQuery("uuid"))->destroy();
-    $this->response->setStatus(204)->send();
+    $result = $post
+      ->load($this->database, $this->request->getQuery("uuid"))
+      ->destroy($this->database);
+    $this->response->setStatus($result ? 204 : 500)->send();
   }
 }

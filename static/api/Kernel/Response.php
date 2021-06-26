@@ -9,9 +9,29 @@ class Response
 
   private const COOKIES_ROOT = "/";
 
+  public function redirect(string $value_uri, $permanent = false): static
+  {
+    $this->setStatus($permanent ? 301 : 302);
+    header("Location: $value_uri;", true, $this->status);
+    return $this;
+  }
+
+  public function redirectForUpgrade(string $value_uri): static
+  {
+    $this->setStatus(307);
+    header("Location: $value_uri;", true, $this->status);
+    return $this;
+  }
+
   public function setStatus(int $status): static
   {
     $this->status = $status;
+    return $this;
+  }
+
+  public function setHeader(string $key, string $value, bool $replace = true): static
+  {
+    header("$key: $value;", $replace);
     return $this;
   }
 
@@ -32,18 +52,19 @@ class Response
     return $this;
   }
 
-  public function sendJSON()
+  public function sendJSON(bool $exit = false)
   {
     header('Content-Type: application/json;charset=utf-8');
-    $this->send(json_encode($this->body));
+    $this->send($exit, json_encode($this->body));
   }
 
-  public function send(?string $deliver = null)
+  public function send(bool $exit = false, ?string $deliver = null)
   {
     http_response_code($this->status);
     if (is_null($deliver) && !is_string($this->body)) {
       $deliver = serialize($this->body);
     }
     echo !is_null($deliver) ? $deliver : $this->body;
+    if ($exit) exit;
   }
 }

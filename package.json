@@ -26,6 +26,8 @@
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.9.1",
+    "marked": "^2.1.2",
+    "moment": "^2.29.1",
     "nuxt": "^2.15.3"
   },
   "devDependencies": {

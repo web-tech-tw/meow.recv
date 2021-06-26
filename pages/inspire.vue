@@ -13,6 +13,7 @@ export default {
   data: () => ({
     article: {
       content: '',
+      parent: '39be1778-d40c-11eb-945e-e766493c50dc',
     },
   }),
   methods: {

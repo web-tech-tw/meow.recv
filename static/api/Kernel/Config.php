@@ -26,10 +26,12 @@ class Config
     }
   }
 
-  public function getConfig(string $key)
+  public function get(string $key, bool $required = true): ?string
   {
     if (array_key_exists($key, $this->config)) {
       return $this->config[$key];
+    } elseif (!$required) {
+      return null;
     } else {
       throw new Exception("$key is not found in the configuration");
     }

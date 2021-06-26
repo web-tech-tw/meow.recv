@@ -10,11 +10,7 @@ class Database
 
   public function __construct(Config $config)
   {
-    $this->client = new PDO(
-      $config->getConfig("DB_DSN"),
-      $config->getConfig("DB_USERNAME"),
-      $config->getConfig("DB_PASSWORD")
-    );
+    $this->client = new PDO($config->get("DB_DSN"), $config->get("DB_USERNAME"), $config->get("DB_PASSWORD"));
   }
 
   public function getClient(): PDO

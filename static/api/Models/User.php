@@ -17,7 +17,7 @@ class User extends ModelBase implements ModelInterface
 
   public function load(Database $db_instance, mixed $filter): static
   {
-    assert(is_array($filter) && count($filter) === 2, new Error("Argument #2 should be array, and count should be 2"));
+    assert(is_array($filter) && count($filter) === 2, new AssertionError("Argument #2 should be array, and count should be 2"));
     $stmt = $db_instance->getClient()->prepare(
       $filter[0] ?
         'SELECT `identity`, `display_name`, `device`, `ip_addr`, `created_time` FROM `users` WHERE `access_token` = ?' :

@@ -9,38 +9,25 @@ class Authentication implements MiddlewareInterface
   private const ACCESS_COOKIE = "access_cookie";
   private const ACCESS_COOKIE_EXPIRES = 86400;
 
-  public static function createNewUser(ControllerInterface $controller): bool
+  public static function issue(ControllerInterface $controller, string $access_token)
   {
-    $timestamp = time();
-    try {
-      $seed = random_bytes(32) . $timestamp;
-    } catch (Exception $exception) {
-      $seed = rand(0, 4096) . $timestamp;
-      error_log($exception->getMessage());
-    }
-    $identity = hash("sha256", $seed);
-    $access_token = hash("sha256", $seed . $timestamp . $seed);
-    $controller->response->setCookie(
-      self::ACCESS_COOKIE,
-      $access_token,
-      $timestamp + self::ACCESS_COOKIE_EXPIRES
-    );
-    return $controller->user
-      ->setIdentity($identity)
-      ->setAccessToken($access_token)
-      ->setDisplayName($controller->request->getIpAddr())
-      ->setIpAddr($controller->request->getIpAddr())
-      ->setDevice($controller->request->getUserAgent())
-      ->create($controller->database);
+    $expires = time() + Authentication::ACCESS_COOKIE_EXPIRES;
+    $controller->getResponse()->setCookie(Authentication::ACCESS_COOKIE, $access_token, $expires);
+  }
+
+  public static function load(ControllerInterface $controller): bool
+  {
+    $identity = $controller->getRequest()->getCookie(self::ACCESS_COOKIE);
+    if (empty($identity)) return false;
+    $controller->user = new User();
+    $controller->user->load($controller->getDatabase(), [true, $identity]);
+    return $controller->user->checkReady();
   }
 
   public static function trigger(ControllerInterface $controller): void
   {
-    $identity = $controller->request->getCookie(self::ACCESS_COOKIE);
-    $controller->user = new User();
-    $controller->user->load($controller->database, [true, $identity]);
-    if (!$controller->user->checkReady()) {
-      self::createNewUser($controller);
+    if (!self::load($controller)) {
+      $controller->getResponse()->setStatus(401)->send(true);
     }
   }
 }
