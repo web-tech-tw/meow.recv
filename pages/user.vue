@@ -1,6 +1,6 @@
 <template>
   <div :class="activeStatus">
-    <v-card :disabled="active" class="interactive">
+    <v-card :disabled="!!active" class="interactive">
       <v-card-title>{{ profile.display_name }}</v-card-title>
       <v-card-subtitle>ID: {{ profile.identity }}</v-card-subtitle>
       <v-card-text>

@@ -75,7 +75,7 @@ class Request
     return $_SERVER["HTTP_$key"] ?? "";
   }
 
-  public function assertKeysInData(Response $response, array|string $key, array $data): void
+  public static function assertKeysInData(Response $response, array|string $key, array $data): void
   {
     $key = is_array($key) ? $key : [$key];
     $result = array_filter($key, fn($name) => !array_key_exists($name, $data));
@@ -86,6 +86,17 @@ class Request
       "reason" => "Missing the argument(s)",
       "missing" => $result
     ])->sendJSON(true);
+  }
+
+  public static function validData(Response $response, callable $validator, mixed $data): void
+  {
+    if (!($reason = call_user_func($validator, $data))) {
+      $response->setStatus(400)->setBody([
+        "status" => 400,
+        "message" => "Bad Request",
+        "reason" => $reason,
+      ])->sendJSON(true);
+    }
   }
 
   public function readForm(): array
