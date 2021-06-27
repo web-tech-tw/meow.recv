@@ -69,6 +69,12 @@ class Request
     return $_COOKIE[$key] ?? "";
   }
 
+  public function getHeader(string $key): string
+  {
+    $key = strtoupper($key);
+    return $_SERVER["HTTP_$key"] ?? "";
+  }
+
   public function assertKeysInData(Response $response, array|string $key, array $data): void
   {
     $key = is_array($key) ? $key : [$key];

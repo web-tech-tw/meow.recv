@@ -66,18 +66,18 @@ class ControllerBase implements ControllerInterface
 
   public function trigger(): void
   {
+    foreach ($this->middlewares_before as $class) {
+      call_user_func("$class::trigger", $this);
+    }
     $method = $this->request->getMethod();
     if (method_exists($this, "{$method}Action")) {
-      foreach ($this->middlewares_before as $class) {
-        call_user_func("$class::trigger", $this);
-      }
       $this->{"{$method}Action"}();
-      foreach ($this->middlewares_after as $class) {
-        call_user_func("$class::trigger", $this);
-      }
     } else {
       http_response_code(405);
       echo "Method Not Allowed";
+    }
+    foreach ($this->middlewares_after as $class) {
+      call_user_func("$class::trigger", $this);
     }
   }
 }

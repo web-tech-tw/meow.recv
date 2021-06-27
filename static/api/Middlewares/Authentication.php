@@ -15,6 +15,11 @@ class Authentication implements MiddlewareInterface
     $controller->getResponse()->setCookie(Authentication::ACCESS_COOKIE, $access_token, $expires);
   }
 
+  public static function revoke(ControllerInterface $controller)
+  {
+    $controller->getResponse()->setCookie(Authentication::ACCESS_COOKIE, "invalid", -1);
+  }
+
   public static function load(ControllerInterface $controller): bool
   {
     $identity = $controller->getRequest()->getCookie(self::ACCESS_COOKIE);

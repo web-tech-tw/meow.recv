@@ -20,7 +20,13 @@ export default {
     articles: [],
   }),
   async fetch() {
-    this.articles = await this.$axios.$get('timeline.php')
+    try {
+      this.articles = await this.$axios.$get('timeline.php')
+    } catch (e) {
+      if (e.response.status === 401) {
+        await this.$router.replace('/signup')
+      }
+    }
   },
   fetchOnServer: false,
 }

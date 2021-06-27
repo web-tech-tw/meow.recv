@@ -13,9 +13,17 @@ export default {
   data: () => ({
     article: {
       content: '',
-      parent: '39be1778-d40c-11eb-945e-e766493c50dc',
     },
   }),
+  async fetch() {
+    try {
+      await this.$axios.$get('timeline.php')
+    } catch (e) {
+      if (e.response.status === 401) {
+        await this.$router.replace('/signup')
+      }
+    }
+  },
   methods: {
     create() {
       this.$axios.$post('post.php', this.article)

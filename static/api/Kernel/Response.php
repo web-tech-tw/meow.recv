@@ -31,7 +31,7 @@ class Response
 
   public function setHeader(string $key, string $value, bool $replace = true): static
   {
-    header("$key: $value;", $replace);
+    header("$key: $value", $replace);
     return $this;
   }
 
