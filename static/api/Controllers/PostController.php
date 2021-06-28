@@ -64,12 +64,25 @@ class PostController extends ControllerBase implements AllowCORS
     }
   }
 
+  public function PUTAction(): void
+  {
+    $post = new Post();
+    $post->load($this->database, "");
+    $post->setContent();
+    if (!empty($post->getContent())) {
+      $post->create($this->database);
+      $this->response->setStatus(204)->send();
+    } else {
+      $this->response->setStatus(400)->setBody("Bad Request")->send();
+    }
+  }
+
   public function DELETEAction(): void
   {
     $post = new Post();
-    $result = $post
-      ->load($this->database, $this->request->getQuery("uuid"))
-      ->destroy($this->database);
+    $post->load($this->database, $this->request->getQuery("uuid"));
+    if (!$post->isAuthor($this->user)) $this->response->setStatus(403)->send(true);
+    $result = $post->destroy($this->database);
     $this->response->setStatus($result ? 204 : 500)->send();
   }
 }

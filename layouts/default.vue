@@ -6,13 +6,14 @@
     </v-app-bar>
     <v-main>
       <nuxt />
+      <notice :text="$store.state.notification" />
     </v-main>
     <v-footer height="70px" app>
       <v-row justify="space-around" align="center">
         <v-btn icon x-large nuxt to="/">
           <v-icon large>mdi-contacts</v-icon>
         </v-btn>
-        <v-btn icon x-large nuxt to="/inspire">
+        <v-btn class="primary" icon x-large nuxt to="/inspire">
           <v-icon large>mdi-plus</v-icon>
         </v-btn>
         <v-btn icon x-large nuxt to="/user">
@@ -22,3 +23,11 @@
     </v-footer>
   </v-app>
 </template>
+
+<script>
+import Notice from '~/components/Notice'
+
+export default {
+  components: { Notice },
+}
+</script>

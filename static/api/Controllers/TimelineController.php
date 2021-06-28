@@ -46,6 +46,7 @@ class TimelineController extends ControllerBase implements AllowCORS
       $post->loadAuthor($this->database)->loadChildren($this->database);
       return $post;
     }, $result);
+    usort($posts, fn($a, $b) => $a->created_time < $b->created_time);
     $this->response->setBody($posts)->sendJSON();
   }
 }

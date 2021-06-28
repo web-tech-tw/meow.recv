@@ -70,6 +70,16 @@ class Post extends ModelBase implements ModelInterface
     return $stmt->execute([$this->uuid]);
   }
 
+
+  public function isAuthor(User $user): bool
+  {
+    if ($this->author instanceof User) {
+      return $this->author->identity === $user->identity;
+    } else {
+      return $this->author === $user->identity;
+    }
+  }
+
   /**
    * @param Database $db_instance
    * @return Post
@@ -114,6 +124,16 @@ class Post extends ModelBase implements ModelInterface
   public function getContent(): string
   {
     return $this->content;
+  }
+
+  /**
+   * @param string $content
+   * @return Post
+   */
+  public function setContent(string $content): static
+  {
+    $this->content = $content;
+    return $this;
   }
 
   /**

@@ -6,6 +6,15 @@
     </v-app-bar>
     <v-main>
       <nuxt />
+      <notice :text="$store.state.notification" />
     </v-main>
   </v-app>
 </template>
+
+<script>
+import Notice from '~/components/Notice'
+
+export default {
+  components: { Notice },
+}
+</script>

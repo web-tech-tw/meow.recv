@@ -1,44 +1,49 @@
 <template>
   <div :class="activeStatus">
     <v-card :disabled="!!active" class="interactive">
-      <v-card-title>{{ profile.display_name }}</v-card-title>
-      <v-card-subtitle>ID: {{ profile.identity }}</v-card-subtitle>
+      <v-card-title>{{ $store.state.profile.display_name }}</v-card-title>
+      <v-card-subtitle>ID: {{ $store.state.profile.identity }}</v-card-subtitle>
       <v-card-text>
         <p>
-          IP: {{ profile.ip_addr }}<br />
-          User-Agent: {{ profile.device }}
+          IP: {{ $store.state.profile.ip_addr }}<br />
+          User-Agent: {{ $store.state.profile.device }}
         </p>
-        Created at {{ timeReadable(profile.created_time) }}
+        Created at {{ timeReadable($store.state.profile.created_time) }}
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn color="red" @click="active = 2">Revoke</v-btn>
       </v-card-actions>
     </v-card>
-    <div id="component">
+    <div class="component">
       <rename-model v-show="active === 1" @cancel="cancel" @success="$fetch" />
-      <revoke-model v-show="active === 2" @cancel="cancel" @success="$fetch" />
+      <revoke-model
+        v-show="active === 2"
+        @cancel="cancel"
+        @success="revokeSuccess"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import RenameModel from '~/components/RenameModel'
-import RevokeModel from '~/components/RevokeModel'
+import RenameModel from '~/components/user/RenameModel'
+import RevokeModel from '~/components/user/RevokeModel'
 
 export default {
   components: { RevokeModel, RenameModel },
   data: () => ({
     active: 0,
-    profile: {},
+    notification: '',
   }),
   async fetch() {
     try {
-      this.profile = await this.$axios.$get('user.php')
+      const profile = await this.$axios.$get('user.php')
+      this.$store.commit('syncProfile', profile)
     } catch (e) {
       if (e.response.status === 401) {
-        await this.$router.replace('/signup')
+        this.$store.commit('setNotification', 'Unauthenticated')
       }
     }
   },
@@ -48,6 +53,11 @@ export default {
     },
   },
   methods: {
+    revokeSuccess() {
+      this.$fetch()
+      this.cancel()
+      this.$store.commit('setNotification', 'Revoke Successful!')
+    },
     cancel() {
       this.active = 0
     },

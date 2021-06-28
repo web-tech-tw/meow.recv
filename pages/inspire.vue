@@ -15,18 +15,10 @@ export default {
       content: '',
     },
   }),
-  async fetch() {
-    try {
-      await this.$axios.$get('timeline.php')
-    } catch (e) {
-      if (e.response.status === 401) {
-        await this.$router.replace('/signup')
-      }
-    }
-  },
   methods: {
-    create() {
-      this.$axios.$post('post.php', this.article)
+    async create() {
+      await this.$axios.$post('post.php', this.article)
+      await this.$router.replace('/')
     },
   },
 }
