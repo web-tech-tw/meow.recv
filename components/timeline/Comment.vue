@@ -15,7 +15,7 @@
       <v-list-item-action v-show="hover">
         <v-btn-toggle>
           <v-btn
-            title="Comments"
+            title="View"
             rounded
             small
             @click="$router.push(`/post/${child.uuid}`)"
@@ -29,6 +29,12 @@
               </v-btn>
             </template>
             <v-list>
+              <v-list-item @click="$emit('edit', child)">
+                <v-list-item-icon>
+                  <v-icon>mdi-pen</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>Edit</v-list-item-content>
+              </v-list-item>
               <v-list-item @click="$emit('delete', child)">
                 <v-list-item-icon>
                   <v-icon>mdi-delete</v-icon>

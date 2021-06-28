@@ -7,7 +7,7 @@
         class="blockquote"
       />
       <v-btn color="grey" nuxt to="/">Cancel</v-btn>
-      <v-btn color="primary" @click="create">Post</v-btn>
+      <v-btn color="primary" :disabled="empty" @click="create">Say</v-btn>
     </v-card-text>
   </v-card>
 </template>
@@ -19,6 +19,11 @@ export default {
       content: '',
     },
   }),
+  computed: {
+    empty() {
+      return !this.article.content
+    },
+  },
   methods: {
     async create() {
       await this.$axios.$post('post.php', this.article)

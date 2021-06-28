@@ -20,7 +20,7 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item>
+              <v-list-item @click="$emit('edit', article)">
                 <v-list-item-icon>
                   <v-icon>mdi-pen</v-icon>
                 </v-list-item-icon>

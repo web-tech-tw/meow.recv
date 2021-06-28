@@ -90,11 +90,11 @@ class Request
 
   public static function validData(Response $response, callable $validator, mixed $data): void
   {
-    if (!($reason = call_user_func($validator, $data))) {
+    if (!(call_user_func($validator, $data))) {
       $response->setStatus(400)->setBody([
         "status" => 400,
         "message" => "Bad Request",
-        "reason" => $reason,
+        "reason" => "Invalid data"
       ])->sendJSON(true);
     }
   }

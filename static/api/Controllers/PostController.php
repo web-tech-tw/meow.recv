@@ -30,7 +30,7 @@ class PostController extends ControllerBase implements AllowCORS
 
   public function getAllowMethods(): array
   {
-    return [CORS::METHOD_GET, CORS::METHOD_POST, CORS::METHOD_DELETE];
+    return [CORS::METHOD_GET, CORS::METHOD_POST, CORS::METHOD_PUT, CORS::METHOD_DELETE];
   }
 
   public function GETAction(): void
@@ -51,25 +51,25 @@ class PostController extends ControllerBase implements AllowCORS
   {
     $post = new Post();
     $post->fromArray($this->request->read())->setAuthor($this->user);
-    if (!empty($post->getContent())) {
-      $post->create($this->database);
-      $this->response->setStatus(204)->send();
-    } else {
-      $this->response->setStatus(400)->setBody("Bad Request")->send();
-    }
+    $this->request->validData($this->response, fn($item) => !empty($item), $post->getContent());
+    $post->create($this->database);
+    $this->response->setStatus(204)->send();
   }
 
   public function PUTAction(): void
   {
+    $data = $this->request->read();
+    $this->request->assertKeysInData($this->response, ["uuid", "content"], $data);
+    $uuid = $data["uuid"];
+    $content = $data["content"];
+    $this->request->validData($this->response, fn($item) => !empty($item), $uuid);
+    $this->request->validData($this->response, fn($item) => !empty($item), $content);
     $post = new Post();
-    $post->load($this->database, "");
-    $post->setContent();
-    if (!empty($post->getContent())) {
-      $post->create($this->database);
-      $this->response->setStatus(204)->send();
-    } else {
-      $this->response->setStatus(400)->setBody("Bad Request")->send();
-    }
+    $post->load($this->database, $uuid);
+    if (!$post->isAuthor($this->user)) $this->response->setStatus(403)->send(true);
+    $post->setContent($content);
+    $post->replace($this->database);
+    $this->response->setStatus(204)->send();
   }
 
   public function DELETEAction(): void

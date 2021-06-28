@@ -15,13 +15,14 @@
         sm="8"
         md="6"
       >
-        <post :article="article" @delete="deleteArticle">
+        <post :article="article" @edit="editArticle" @delete="deleteArticle">
           <template #comments>
             <v-list class="mx-1">
               <comment
                 v-for="(child, index) in article.children"
                 :key="index"
                 :child="child"
+                @edit="editArticle"
                 @delete="deleteArticle"
               />
               <add-comment :parent="article.uuid" @submit="success" />
@@ -31,6 +32,12 @@
       </v-col>
     </v-row>
     <div class="component">
+      <edit-model
+        v-show="active === 1"
+        :target="target"
+        @cancel="cancel"
+        @success="success"
+      />
       <remove-model
         v-show="active === 2"
         :target="target"
@@ -45,10 +52,11 @@
 import Post from '~/components/timeline/Post'
 import Comment from '~/components/timeline/Comment'
 import AddComment from '~/components/timeline/AddComment'
+import EditModel from '~/components/post/EditModel'
 import RemoveModel from '~/components/post/RemoveModel'
 
 export default {
-  components: { Post, Comment, AddComment, RemoveModel },
+  components: { Post, Comment, AddComment, EditModel, RemoveModel },
   data: () => ({
     active: 0,
     target: {},
@@ -70,6 +78,9 @@ export default {
     },
   },
   methods: {
+    editArticle(item) {
+      this.callComponent(item, 1)
+    },
     deleteArticle(item) {
       this.callComponent(item, 2)
     },
