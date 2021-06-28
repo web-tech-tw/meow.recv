@@ -1,5 +1,5 @@
 <template>
-  <div :class="activeStatus">
+  <div v-show="ready" :class="activeStatus">
     <v-row
       :disabled="!!active"
       class="interactive"
@@ -35,6 +35,18 @@
             </v-list>
           </template>
         </post>
+      </v-col>
+      <v-col v-if="!articles.length">
+        <v-card>
+          <v-card-title>Empty, Empty, Empty, beep---</v-card-title>
+          <v-card-subtitle>There is nothing.</v-card-subtitle>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn class="amber darken-4" nuxt to="/inspire">
+              Compose your life
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-col>
     </v-row>
     <div class="component">
@@ -86,6 +98,7 @@ export default {
     LinkModel,
   },
   data: () => ({
+    ready: false,
     active: 0,
     target: {},
     articles: [],
@@ -94,6 +107,7 @@ export default {
   async fetch() {
     try {
       this.articles = await this.$axios.$get('timeline.php')
+      this.ready = true
     } catch (e) {
       if (e.response.status === 401) {
         this.$store.commit('setNotification', 'Unauthenticated')
