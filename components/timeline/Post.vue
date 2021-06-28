@@ -7,14 +7,25 @@
         {{ timeReadable(article.created_time) }}
       </v-card-subtitle>
       <v-card-text v-html="getMessageHTML(article.content)" />
+      <v-card-text v-if="article.link">
+        <post :article="article.link"></post>
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn-toggle shaped mandatory>
-          <v-btn title="Comments" rounded @click="comments = !comments">
+          <v-btn
+            v-if="!isLink"
+            title="Comments"
+            rounded
+            @click="comments = !comments"
+          >
             <v-icon>mdi-comment-multiple-outline</v-icon>
             {{ article.children.length }}
           </v-btn>
-          <v-menu v-if="isOwner" offset-y>
+          <v-btn v-else title="View" rounded nuxt :to="`/post/${article.uuid}`">
+            <v-icon>mdi-eye</v-icon>
+          </v-btn>
+          <v-menu v-if="isOwner && !isLink" offset-y>
             <template #activator="{ on, attrs }">
               <v-btn title="More" rounded v-bind="attrs" v-on="on">
                 <v-icon>mdi-more</v-icon>
@@ -50,9 +61,11 @@
 
 <script>
 import { timeReadable, getMessageHTML } from '~/utils/content'
+import Post from '~/components/timeline/Post'
 
 export default {
   name: 'Post',
+  components: { Post },
   props: {
     article: {
       type: Object,
@@ -68,6 +81,9 @@ export default {
   computed: {
     isOwner() {
       return this.article.author.identity === this.$store.state.profile.identity
+    },
+    isLink() {
+      return this.article.children === undefined
     },
   },
   mounted() {

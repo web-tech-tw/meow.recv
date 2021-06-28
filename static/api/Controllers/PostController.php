@@ -40,7 +40,13 @@ class PostController extends ControllerBase implements AllowCORS
     $post = new Post();
     $post->load($this->database, $uuid);
     if ($post->checkReady()) {
-      $post->loadAuthor($this->database)->loadChildren($this->database);
+      $post
+        ->loadLink($this->database)
+        ->loadAuthor($this->database)
+        ->loadChildren($this->database);
+      if ($post->getLink()->checkReady()) {
+        $post->getLink()->loadAuthor($this->database);
+      }
       $this->response->setBody($post)->sendJSON();
     } else {
       $this->response->setStatus(404)->setBody("Not Found")->send();
@@ -52,6 +58,7 @@ class PostController extends ControllerBase implements AllowCORS
     $post = new Post();
     $post->fromArray($this->request->read())->setAuthor($this->user);
     $this->request->validData($this->response, fn($item) => !empty($item), $post->getContent());
+    $this->request->validData($this->response, fn($item) => !$item, $post->isConflict());
     $post->create($this->database);
     $this->response->setStatus(204)->send();
   }

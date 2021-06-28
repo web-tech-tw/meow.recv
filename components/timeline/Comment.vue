@@ -14,12 +14,7 @@
       </v-list-item-content>
       <v-list-item-action v-show="hover">
         <v-btn-toggle>
-          <v-btn
-            title="View"
-            rounded
-            small
-            @click="$router.push(`/post/${child.uuid}`)"
-          >
+          <v-btn title="View" rounded small nuxt :to="`/post/${child.uuid}`">
             <v-icon>mdi-comment-multiple-outline</v-icon>
           </v-btn>
           <v-menu v-if="isOwner" offset-y>

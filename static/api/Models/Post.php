@@ -10,7 +10,8 @@ class Post extends ModelBase implements ModelInterface
   public string $content;
   public int $created_time;
   public ?int $modified_time;
-  public ?string $parent;
+  public Post|string|null $parent;
+  public Post|string|null $link;
   public ?array $children;
 
   public function checkReady(): bool
@@ -22,7 +23,7 @@ class Post extends ModelBase implements ModelInterface
   {
     assert(is_string($filter), new AssertionError("Argument #2 should be string"));
     $stmt = $db_instance->getClient()->prepare(
-      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time`, `parent` FROM `posts` WHERE `uuid` = ?'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time`, `parent`, `link` FROM `posts` WHERE `uuid` = ?'
     );
     $stmt->execute([$filter]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -44,9 +45,9 @@ class Post extends ModelBase implements ModelInterface
       $this->author = $this->author->identity;
     }
     $stmt = $db_instance->getClient()->prepare(
-      'INSERT INTO `posts`(`uuid`, `author`, `content`, `created_time`, `parent`) VALUES (UUID(), :author, :content, UNIX_TIMESTAMP(), :parent)'
+      'INSERT INTO `posts`(`uuid`, `author`, `content`, `created_time`, `parent`, `link`) VALUES (UUID(), :author, :content, UNIX_TIMESTAMP(), :parent, :link)'
     );
-    $db_instance->bindParamsSafe($stmt, $this->toArray(), ["author", "content", "parent"]);
+    $db_instance->bindParamsSafe($stmt, $this->toArray(), ["author", "content", "parent", "link"]);
     return $stmt->execute();
   }
 
@@ -99,6 +100,36 @@ class Post extends ModelBase implements ModelInterface
    * @param Database $db_instance
    * @return Post
    */
+  public function loadParent(Database $db_instance): static
+  {
+    if ($this->parent instanceof Post) {
+      return $this;
+    }
+    $query = $this->parent;
+    $this->parent = new Post();
+    $this->parent->load($db_instance, $query);
+    return $this;
+  }
+
+  /**
+   * @param Database $db_instance
+   * @return Post
+   */
+  public function loadLink(Database $db_instance): static
+  {
+    if ($this->link instanceof Post) {
+      return $this;
+    }
+    $query = $this->link;
+    $this->link = new Post();
+    $this->link->load($db_instance, $query);
+    return $this;
+  }
+
+  /**
+   * @param Database $db_instance
+   * @return Post
+   */
   public function loadChildren(Database $db_instance): static
   {
     if (isset($this->children)) {
@@ -124,6 +155,30 @@ class Post extends ModelBase implements ModelInterface
   public function getContent(): string
   {
     return $this->content;
+  }
+
+  /**
+   * @return Post|string|null
+   */
+  public function getParent(): Post|string|null
+  {
+    return $this->parent;
+  }
+
+  /**
+   * @return Post|string|null
+   */
+  public function getLink(): Post|string|null
+  {
+    return $this->link;
+  }
+
+  /**
+   * @return bool
+   */
+  public function isConflict(): bool
+  {
+    return isset($this->parent) && isset($this->link);
   }
 
   /**

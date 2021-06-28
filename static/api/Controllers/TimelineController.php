@@ -36,14 +36,20 @@ class TimelineController extends ControllerBase implements AllowCORS
   public function GETAction(): void
   {
     $stmt = $this->database->getClient()->prepare(
-      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` IS NULL ORDER BY `created_time` DESC'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time`, `link` FROM `posts` WHERE `parent` IS NULL ORDER BY `created_time` DESC'
     );
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $posts = array_map(function ($item) {
       $post = new Post();
       $post->fromArray($item);
-      $post->loadAuthor($this->database)->loadChildren($this->database);
+      $post
+        ->loadLink($this->database)
+        ->loadAuthor($this->database)
+        ->loadChildren($this->database);
+      if ($post->getLink()->checkReady()) {
+        $post->getLink()->loadAuthor($this->database);
+      }
       return $post;
     }, $result);
     $this->response->setBody($posts)->sendJSON();
