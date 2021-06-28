@@ -36,7 +36,7 @@ class TimelineController extends ControllerBase implements AllowCORS
   public function GETAction(): void
   {
     $stmt = $this->database->getClient()->prepare(
-      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` IS NULL'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` IS NULL ORDER BY `created_time` DESC'
     );
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,7 +46,6 @@ class TimelineController extends ControllerBase implements AllowCORS
       $post->loadAuthor($this->database)->loadChildren($this->database);
       return $post;
     }, $result);
-    usort($posts, fn($a, $b) => $a->created_time < $b->created_time);
     $this->response->setBody($posts)->sendJSON();
   }
 }

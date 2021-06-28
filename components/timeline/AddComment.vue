@@ -1,10 +1,11 @@
 <template>
   <v-list-item>
     <v-list-item-content>
-      <v-textarea v-model="article.content" />
-      <v-btn title="Comments" rounded @click="create">
-        <v-icon>mdi-comment-multiple-outline</v-icon>
-      </v-btn>
+      <v-text-field
+        v-model="article.content"
+        append-outer-icon="mdi-send"
+        @click:append-outer="create"
+      />
     </v-list-item-content>
   </v-list-item>
 </template>

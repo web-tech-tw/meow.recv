@@ -105,7 +105,7 @@ class Post extends ModelBase implements ModelInterface
       return $this;
     }
     $stmt = $db_instance->getClient()->prepare(
-      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` = ?'
+      'SELECT `uuid`, `author`, `created_time`, `content`, `modified_time` FROM `posts` WHERE `parent` = ? ORDER BY `created_time` DESC'
     );
     $stmt->execute([$this->uuid]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
