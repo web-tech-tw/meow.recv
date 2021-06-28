@@ -29,6 +29,12 @@
               </v-btn>
             </template>
             <v-list>
+              <v-list-item @click="$emit('share', child)">
+                <v-list-item-icon>
+                  <v-icon>mdi-share</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>Share</v-list-item-content>
+              </v-list-item>
               <v-list-item @click="$emit('edit', child)">
                 <v-list-item-icon>
                   <v-icon>mdi-pen</v-icon>

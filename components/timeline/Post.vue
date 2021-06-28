@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card>
+      <slot name="top" />
       <v-card-title>{{ article.author.display_name }}</v-card-title>
       <v-card-subtitle>
         {{ timeReadable(article.created_time) }}
@@ -20,6 +21,12 @@
               </v-btn>
             </template>
             <v-list>
+              <v-list-item @click="$emit('share', article)">
+                <v-list-item-icon>
+                  <v-icon>mdi-share</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>Share</v-list-item-content>
+              </v-list-item>
               <v-list-item @click="$emit('edit', article)">
                 <v-list-item-icon>
                   <v-icon>mdi-pen</v-icon>

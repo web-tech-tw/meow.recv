@@ -15,13 +15,19 @@
         sm="8"
         md="6"
       >
-        <post :article="article" @edit="editArticle" @delete="deleteArticle">
+        <post
+          :article="article"
+          @share="shareArticle"
+          @edit="editArticle"
+          @delete="deleteArticle"
+        >
           <template #comments>
             <v-list class="mx-1">
               <comment
                 v-for="(child, index) in article.children"
                 :key="index"
                 :child="child"
+                @share="shareArticle"
                 @edit="editArticle"
                 @delete="deleteArticle"
               />
@@ -32,14 +38,20 @@
       </v-col>
     </v-row>
     <div class="component">
-      <edit-model
+      <share-model
         v-show="active === 1"
         :target="target"
         @cancel="cancel"
         @success="success"
       />
-      <remove-model
+      <edit-model
         v-show="active === 2"
+        :target="target"
+        @cancel="cancel"
+        @success="success"
+      />
+      <remove-model
+        v-show="active === 3"
         :target="target"
         @cancel="cancel"
         @success="success"
@@ -52,11 +64,12 @@
 import Post from '~/components/timeline/Post'
 import Comment from '~/components/timeline/Comment'
 import AddComment from '~/components/timeline/AddComment'
+import ShareModel from '~/components/post/ShareModel'
 import EditModel from '~/components/post/EditModel'
 import RemoveModel from '~/components/post/RemoveModel'
 
 export default {
-  components: { Post, Comment, AddComment, EditModel, RemoveModel },
+  components: { Post, Comment, AddComment, ShareModel, EditModel, RemoveModel },
   data: () => ({
     active: 0,
     target: {},
@@ -78,11 +91,14 @@ export default {
     },
   },
   methods: {
-    editArticle(item) {
+    shareArticle(item) {
       this.callComponent(item, 1)
     },
-    deleteArticle(item) {
+    editArticle(item) {
       this.callComponent(item, 2)
+    },
+    deleteArticle(item) {
+      this.callComponent(item, 3)
     },
     callComponent(item, code) {
       this.target = item

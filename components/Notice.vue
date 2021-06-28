@@ -12,20 +12,22 @@
 <script>
 export default {
   name: 'Notice',
-  props: {
-    text: {
-      type: String,
-      required: true,
-    },
-  },
   data: () => ({
     status: true,
   }),
-  mounted() {
-    setTimeout(() => {
-      this.status = false
-      this.$store.commit('setNotification', '')
-    }, 5000)
+  computed: {
+    text() {
+      return this.$store.state.notification
+    },
+  },
+  watch: {
+    text() {
+      this.status = true
+      setTimeout(() => {
+        this.status = false
+        this.$store.commit('setNotification', '')
+      }, 5000)
+    },
   },
 }
 </script>

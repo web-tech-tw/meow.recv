@@ -5,7 +5,7 @@
       <v-textarea
         v-model="article.content"
         class="blockquote"
-        label="How are you today?"
+        label="Power your article"
       />
     </v-card-text>
     <v-card-actions>

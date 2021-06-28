@@ -6,7 +6,7 @@
     </v-app-bar>
     <v-main>
       <nuxt />
-      <notice :text="$store.state.notification" />
+      <notice />
     </v-main>
     <v-footer height="70px" app>
       <v-row justify="space-around" align="center">

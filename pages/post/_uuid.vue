@@ -7,6 +7,16 @@
       :show-comments="true"
       @delete="deleteArticle"
     >
+      <template #top>
+        <v-toolbar v-if="article.parent">
+          <v-toolbar-title>
+            <v-btn nuxt :to="`/post/${article.parent}`" rounded>
+              <v-icon>mdi-chevron-left</v-icon>
+              Move to parent
+            </v-btn>
+          </v-toolbar-title>
+        </v-toolbar>
+      </template>
       <template #comments>
         <v-list class="mx-1">
           <comment
