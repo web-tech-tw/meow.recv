@@ -30,7 +30,7 @@ export default {
   computed: {
     uriLink() {
       if (process.client) {
-        return `${location.protocol}://${location.host}/post/${this.target.uuid}`
+        return `${location.protocol}//${location.host}/post/${this.target.uuid}`
       } else {
         return this.target.uuid
       }
