@@ -56,7 +56,7 @@ export default {
     revokeSuccess() {
       this.$fetch()
       this.cancel()
-      this.$store.commit('setNotification', 'Revoke Successful!')
+      this.$router.replace('/signup')
     },
     cancel() {
       this.active = 0

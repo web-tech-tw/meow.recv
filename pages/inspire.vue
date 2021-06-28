@@ -1,10 +1,14 @@
 <template>
   <v-card class="text-center">
-    <v-form>
-      <v-textarea v-model="article.content" class="blockquote" />
+    <v-card-text>
+      <v-textarea
+        v-model="article.content"
+        label="How are you today?"
+        class="blockquote"
+      />
       <v-btn color="grey" nuxt to="/">Cancel</v-btn>
       <v-btn color="primary" @click="create">Post</v-btn>
-    </v-form>
+    </v-card-text>
   </v-card>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>Remove</v-card-title>
-    <v-card-text>You will lost the control of this identity.</v-card-text>
+    <v-card-text>The post/comment will be deleted permanently.</v-card-text>
     <v-card-actions>
       <v-spacer />
       <v-btn class="grey" @click="$emit('cancel')">Cancel</v-btn>
