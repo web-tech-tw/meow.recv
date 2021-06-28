@@ -2,6 +2,7 @@
 $_CONFIG = [];
 
 $_CONFIG["CORS"] = false;
+$_CONFIG["CORS_HOST"] = "";
 
 $_CONFIG["DB_DSN"] = "";
 $_CONFIG["DB_USERNAME"] = "";

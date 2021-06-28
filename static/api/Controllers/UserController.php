@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\Pure;
-
 require_once __DIR__ . '/ControllerBase.php';
 require_once __DIR__ . '/CommonCORS.php';
 require_once __DIR__ . '/../Models/Post.php';
@@ -21,10 +19,9 @@ class UserController extends ControllerBase implements AllowCORS
     $this->insertMiddleware(false, "CORS");
   }
 
-  #[Pure]
   public function getAllowOrigin(): string
   {
-    return $this->getOrigin($this->request);
+    return $this->config->get("CORS_HOST", false) ?? $this->getOrigin($this->request);
   }
 
   public function getAllowMethods(): array
