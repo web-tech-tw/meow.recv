@@ -9,6 +9,7 @@
       <v-col
         v-for="(article, key) in articles"
         :key="key"
+        align-self="start"
         class="mb-3"
         cols="12"
         sm="8"

@@ -13,7 +13,7 @@
         </v-list-item-action-text>
       </v-list-item-content>
       <v-list-item-action v-show="hover">
-        <v-list-item-action-text>
+        <v-btn-toggle>
           <v-btn
             title="Comments"
             rounded
@@ -37,7 +37,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
-        </v-list-item-action-text>
+        </v-btn-toggle>
       </v-list-item-action>
     </v-list-item>
   </v-hover>

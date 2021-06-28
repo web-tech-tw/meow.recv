@@ -13,6 +13,7 @@
             v-for="(child, index) in article.children"
             :key="index"
             :child="child"
+            @delete="deleteArticle"
           />
           <add-comment :parent="article.uuid" @submit="success" />
         </v-list>
@@ -21,7 +22,7 @@
     <div class="component">
       <remove-model
         v-show="active === 2"
-        :target="article"
+        :target="target"
         @cancel="cancel"
         @success="deleteSuccess"
       />
@@ -39,6 +40,7 @@ export default {
   components: { Post, Comment, AddComment, RemoveModel },
   data: () => ({
     active: 0,
+    target: {},
     article: null,
   }),
   async fetch() {
@@ -69,8 +71,11 @@ export default {
       this.active = code
     },
     deleteSuccess() {
+      const deleted = this.target.uuid
       this.success()
-      this.$router.replace('/')
+      if (this.article.uuid === deleted) {
+        this.$router.replace('/')
+      }
     },
     success() {
       this.$fetch()

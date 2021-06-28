@@ -5,6 +5,7 @@
         v-model="article.content"
         append-outer-icon="mdi-send"
         @click:append-outer="create"
+        @keydown.ctrl.enter="create"
       />
     </v-list-item-content>
   </v-list-item>
@@ -31,6 +32,7 @@ export default {
   methods: {
     async create() {
       await this.$axios.$post('post.php', this.article)
+      this.article.content = ''
       this.$emit('submit')
     },
   },
