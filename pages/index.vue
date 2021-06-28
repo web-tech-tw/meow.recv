@@ -42,7 +42,7 @@
         v-show="active === 1"
         :target="target"
         @cancel="cancel"
-        @success="success"
+        @link="linkArticle"
       />
       <edit-model
         v-show="active === 2"
@@ -52,6 +52,12 @@
       />
       <remove-model
         v-show="active === 3"
+        :target="target"
+        @cancel="cancel"
+        @success="success"
+      />
+      <link-model
+        v-show="active === 4"
         :target="target"
         @cancel="cancel"
         @success="success"
@@ -67,9 +73,18 @@ import AddComment from '~/components/timeline/AddComment'
 import ShareModel from '~/components/post/ShareModel'
 import EditModel from '~/components/post/EditModel'
 import RemoveModel from '~/components/post/RemoveModel'
+import LinkModel from '~/components/post/LinkModel'
 
 export default {
-  components: { Post, Comment, AddComment, ShareModel, EditModel, RemoveModel },
+  components: {
+    Post,
+    Comment,
+    AddComment,
+    ShareModel,
+    EditModel,
+    RemoveModel,
+    LinkModel,
+  },
   data: () => ({
     active: 0,
     target: {},
@@ -99,6 +114,9 @@ export default {
     },
     deleteArticle(item) {
       this.callComponent(item, 3)
+    },
+    linkArticle(item) {
+      this.callComponent(item, 4)
     },
     callComponent(item, code) {
       this.target = item

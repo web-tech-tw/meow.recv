@@ -13,6 +13,9 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
+      <v-btn class="amber darken-3" @click="$emit('link', target)">
+        Or share as new post
+      </v-btn>
       <v-btn class="primary" @click="$emit('cancel')">Close</v-btn>
     </v-card-actions>
   </v-card>

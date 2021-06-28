@@ -7,9 +7,12 @@
         {{ timeReadable(article.created_time) }}
       </v-card-subtitle>
       <v-card-text v-html="getMessageHTML(article.content)" />
-      <v-card-text v-if="article.link">
-        <post :article="article.link"></post>
+      <v-card-text v-if="article.link && isSingleLink">
+        <post :article="article.link" />
       </v-card-text>
+      <v-card-subtitle v-if="article.link && !isSingleLink">
+        (Linked with another post)
+      </v-card-subtitle>
       <v-card-actions>
         <v-spacer />
         <v-btn-toggle shaped mandatory>
@@ -84,6 +87,9 @@ export default {
     },
     isLink() {
       return this.article.children === undefined
+    },
+    isSingleLink() {
+      return typeof this.article.link !== 'string'
     },
   },
   mounted() {
