@@ -33,6 +33,7 @@ export default {
     async submit() {
       await this.$axios.$post('user.php', this.user)
       const profile = await this.$axios.$get('user.php')
+      this.$store.commit('setNotification', 'Hello World!')
       this.$store.commit('syncProfile', profile)
       await this.$router.replace('/')
     },
