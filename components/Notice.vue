@@ -21,10 +21,7 @@ export default {
   watch: {
     text() {
       this.status = true
-      setTimeout(() => {
-        this.status = false
-        this.$store.commit('setNotification', '')
-      }, 5000)
+      setTimeout(close, 5000)
     },
   },
   methods: {
