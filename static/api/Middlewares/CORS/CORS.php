@@ -29,7 +29,7 @@ class CORS implements MiddlewareInterface
 
   public static function trigger(ControllerInterface $controller): void
   {
-    assert($controller instanceof AllowCORS, new AssertionError("The controller is not allow CORS."));
+    assert($controller instanceof AllowCORS, new AssertionError("The controller is not allowed CORS."));
     if (!$controller->getConfig()->get("CORS", false)) return;
     self::rewrite($controller);
     if ($controller->getRequest()->getMethod() === self::METHOD_OPTIONS) {

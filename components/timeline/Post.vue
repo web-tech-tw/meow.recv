@@ -6,7 +6,10 @@
       <v-card-subtitle>
         {{ timeReadable(article.created_time) }}
       </v-card-subtitle>
-      <v-card-text v-html="getMessageHTML(article.content)" />
+      <v-card-text
+        class="mark-output"
+        v-html="getMessageHTML(article.content)"
+      />
       <v-card-text v-if="article.link && isSingleLink">
         <post :article="article.link" />
       </v-card-text>
@@ -27,6 +30,9 @@
           </v-btn>
           <v-btn v-else title="View" rounded nuxt :to="`/post/${article.uuid}`">
             <v-icon>mdi-eye</v-icon>
+          </v-btn>
+          <v-btn v-if="!isOwner && !isLink" @click="$emit('share', article)">
+            <v-icon>mdi-share</v-icon>
           </v-btn>
           <v-menu v-if="isOwner && !isLink" offset-y>
             <template #activator="{ on, attrs }">
@@ -97,3 +103,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.mark-output img {
+  max-width: 50%;
+}
+</style>
