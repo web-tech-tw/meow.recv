@@ -32,6 +32,8 @@ export default {
   methods: {
     async submit() {
       await this.$axios.$post('user.php', this.user)
+      const profile = await this.$axios.$get('user.php')
+      this.$store.commit('syncProfile', profile)
       await this.$router.replace('/')
     },
   },
