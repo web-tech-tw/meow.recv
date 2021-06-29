@@ -2,9 +2,7 @@
   <v-snackbar v-if="text" v-model="status">
     {{ text }}
     <template #action="{ attrs }">
-      <v-btn color="pink" text v-bind="attrs" @click="status = false">
-        Close
-      </v-btn>
+      <v-btn color="pink" text v-bind="attrs" @click="close">Close</v-btn>
     </template>
   </v-snackbar>
 </template>
@@ -27,6 +25,12 @@ export default {
         this.status = false
         this.$store.commit('setNotification', '')
       }, 5000)
+    },
+  },
+  methods: {
+    close() {
+      this.status = false
+      this.$store.commit('setNotification', '')
     },
   },
 }
