@@ -5,6 +5,8 @@
       class="interactive"
       :article="article"
       :show-comments="true"
+      @share="shareArticle"
+      @edit="editArticle"
       @delete="deleteArticle"
     >
       <template #top>
@@ -23,6 +25,8 @@
             v-for="(child, index) in article.children"
             :key="index"
             :child="child"
+            @share="shareArticle"
+            @edit="editArticle"
             @delete="deleteArticle"
           />
           <add-comment :parent="article.uuid" @submit="success" />
@@ -30,11 +34,29 @@
       </template>
     </post>
     <div class="component">
-      <remove-model
+      <share-model
+        v-show="active === 1"
+        :target="target"
+        @cancel="cancel"
+        @link="linkArticle"
+      />
+      <edit-model
         v-show="active === 2"
         :target="target"
         @cancel="cancel"
+        @success="success"
+      />
+      <remove-model
+        v-show="active === 3"
+        :target="target"
+        @cancel="cancel"
         @success="deleteSuccess"
+      />
+      <link-model
+        v-show="active === 4"
+        :target="target"
+        @cancel="cancel"
+        @success="success"
       />
     </div>
   </div>
@@ -45,9 +67,20 @@ import Post from '~/components/timeline/Post'
 import Comment from '~/components/timeline/Comment'
 import AddComment from '~/components/timeline/AddComment'
 import RemoveModel from '~/components/post/RemoveModel'
+import ShareModel from '~/components/post/ShareModel'
+import EditModel from '~/components/post/EditModel'
+import LinkModel from '~/components/post/LinkModel'
 
 export default {
-  components: { Post, Comment, AddComment, RemoveModel },
+  components: {
+    Post,
+    Comment,
+    AddComment,
+    ShareModel,
+    EditModel,
+    RemoveModel,
+    LinkModel,
+  },
   data: () => ({
     active: 0,
     target: {},
@@ -73,8 +106,17 @@ export default {
     },
   },
   methods: {
-    deleteArticle(item) {
+    shareArticle(item) {
+      this.callComponent(item, 1)
+    },
+    editArticle(item) {
       this.callComponent(item, 2)
+    },
+    deleteArticle(item) {
+      this.callComponent(item, 3)
+    },
+    linkArticle(item) {
+      this.callComponent(item, 4)
     },
     callComponent(item, code) {
       this.target = item
