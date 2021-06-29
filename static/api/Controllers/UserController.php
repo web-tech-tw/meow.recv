@@ -26,7 +26,7 @@ class UserController extends ControllerBase implements AllowCORS
 
   public function getAllowMethods(): array
   {
-    return [CORS::METHOD_GET, CORS::METHOD_POST, CORS::METHOD_DELETE];
+    return [CORS::METHOD_GET, CORS::METHOD_POST, CORS::METHOD_PATCH, CORS::METHOD_DELETE];
   }
 
   private static function generateRandomSeed(): string
@@ -64,6 +64,17 @@ class UserController extends ControllerBase implements AllowCORS
       ->setIpAddr($this->request->getRemoteIp())
       ->setDevice($this->request->getUserAgent())
       ->create($this->database);
+    $this->response->setStatus($result ? 204 : 500)->send();
+  }
+
+  public function PATCHAction(): void
+  {
+    $display_name = $this->request->getQuery("display_name");
+    $this->request->validData($this->response, fn($item) => !empty($item), $display_name);
+    if (!Authentication::load($this)) {
+      $this->response->setStatus(401)->send(true);
+    }
+    $result = $this->user->setDisplayName($display_name)->replace($this->database);
     $this->response->setStatus($result ? 204 : 500)->send();
   }
 

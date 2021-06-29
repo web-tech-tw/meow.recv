@@ -11,7 +11,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn class="primary" @click="submit">Create</v-btn>
+      <v-btn class="primary" :disabled="empty" @click="submit">Create</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -24,6 +24,11 @@ export default {
       display_name: '',
     },
   }),
+  computed: {
+    empty() {
+      return !this.user.display_name
+    },
+  },
   methods: {
     async submit() {
       await this.$axios.$post('user.php', this.user)

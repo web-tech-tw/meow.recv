@@ -15,7 +15,7 @@ export default {
   name: 'RevokeModel',
   methods: {
     async revoke() {
-      await this.$axios.$delete(`user.php`)
+      await this.$axios.$delete('user.php')
       this.$emit('success')
     },
   },

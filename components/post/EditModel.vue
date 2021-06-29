@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     async refactor() {
-      await this.$axios.$put(`post.php`, this.article)
+      await this.$axios.$put('post.php', this.article)
       this.$emit('success')
     },
   },

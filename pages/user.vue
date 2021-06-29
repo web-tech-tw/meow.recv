@@ -12,11 +12,16 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="red" @click="active = 2">Revoke</v-btn>
+        <v-btn color="grey" @click="callComponent(1)">Rename</v-btn>
+        <v-btn color="red" @click="callComponent(2)">Revoke</v-btn>
       </v-card-actions>
     </v-card>
     <div class="component">
-      <rename-model v-show="active === 1" @cancel="cancel" @success="$fetch" />
+      <rename-model
+        v-show="active === 1"
+        @cancel="cancel"
+        @success="renameSuccess"
+      />
       <revoke-model
         v-show="active === 2"
         @cancel="cancel"
@@ -53,10 +58,17 @@ export default {
     },
   },
   methods: {
+    renameSuccess() {
+      this.$fetch()
+      this.cancel()
+    },
     revokeSuccess() {
       this.$fetch()
       this.cancel()
       this.$router.replace('/signup')
+    },
+    callComponent(code) {
+      this.active = code
     },
     cancel() {
       this.active = 0
