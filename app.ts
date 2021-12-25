@@ -1,30 +1,19 @@
-import * as express from 'express';
+const express = require('express');
+const initialize = require('./src/kernel/initialize');
 
-const port = 5000;
+const api = require('./src/index');
 
-const app: express.Express = express();
+// Constants
+const app = express();
+const port = 3000;
 
-app.get('/', (request: express.Request, response: express.Response) => {
-    response.type('text/plain');
-    response.send('Homepage');
-})
+// Static
+app.use(express.static('public'));
 
-app.get('/articles', (request: express.Request, response: express.Response) => {
-    response.type('text/plain');
-    response.send('All articles are here!');
-})
+// Dynamic
+app.use('/api', api);
 
-app.get('/about-me', (request: express.Request, response: express.Response) => {
-    response.type('text/plain');
-    response.send('My name is Jimmy.');
-})
-
-app.use((request: express.Request, response: express.Response) => {
-    response.type('text/plain');
-    response.status(404)
-    response.send('Page is not found.');
-})
-
-app.listen(port, () => {
-    console.log(`server is running on http://localhost:5000`)}
-);
+// Listen
+initialize().then(() => app.listen(port, () => {
+    console.log(`Essential is listening at http://localhost:${port}`)
+}))
