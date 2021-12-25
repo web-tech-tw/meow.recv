@@ -8,7 +8,7 @@
     "serve": "node --loader ts-node/esm app.ts"
   },
   "keywords": [],
-  "author": "Star Inc.",
+  "author": "Taiwan Web Technology Promotion Organization",
   "license": "MIT",
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.6",
