@@ -20,9 +20,9 @@ router.post('/', async function (request: Request, response: Response) {
     }
     const username = request.body.username;
     const password = sha256(request.body.password);
-    const uuid = await issue(username, password);
-    if (uuid !== undefined) {
-        response.status(statusCode.OK).json({uuid});
+    const jwt = await issue(username, password);
+    if (jwt !== undefined) {
+        response.status(statusCode.OK).send(jwt);
     } else {
         response.status(statusCode.UNAUTHORIZED).send();
     }
