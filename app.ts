@@ -7,13 +7,11 @@ const api = require('./src/index');
 const app = express();
 const port = 3000;
 
-// Static
-app.use(express.static('public'));
-
 // Dynamic
-app.use('/api', api);
+app.use('/', api);
 
 // Listen
 initialize().then(() => app.listen(port, () => {
-    console.log(`Essential is listening at http://localhost:${port}`)
+    console.log('meow.recv\n====')
+    console.log(`Application is listening at http://localhost:${port}`)
 }))
