@@ -1,7 +1,7 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 
 @Table
-export default class Article extends Model {
+export default class Post extends Model {
     @Column
     uuid: string
 
@@ -12,10 +12,10 @@ export default class Article extends Model {
     content: string
 
     @Column
-    created_at: number
+    createdAt: Date
 
     @Column
-    updated_at: number
+    updatedAt: Date
 
     @Column
     parent: string
@@ -24,5 +24,5 @@ export default class Article extends Model {
     link: string
 
     @Column
-    children: this[]
+    children: string
 }

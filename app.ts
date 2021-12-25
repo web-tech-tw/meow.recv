@@ -1,6 +1,7 @@
 const express = require('express');
 const initialize = require('./src/kernel/initialize');
 
+require('dotenv').config()
 const api = require('./src/index');
 
 // Constants

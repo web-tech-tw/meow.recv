@@ -1,44 +1,48 @@
-import {sha256} from "js-sha256";
 import statusCode from 'http-status-codes';
-import {Request, Response, Router, urlencoded} from 'express';
 
-import {issue} from "../kernel/access";
+import {sha256} from "js-sha256";
+import {Request, Response, Router, urlencoded} from 'express';
+import {v4 as uuid} from "uuid";
+
 import User from "../models/user"
 
 const router: Router = Router();
 router.use(urlencoded({extended: true}));
-router.get('/', function (_: Request, response: Response) {
-    if (response.locals.user) {
-        response.status(statusCode.OK).json(response.locals.user);
-    } else {
-        response.status(statusCode.UNAUTHORIZED).send();
-    }
-})
 router.post('/', async function (request: Request, response: Response) {
     if (response.locals.user) {
         response.status(statusCode.FORBIDDEN).send();
+        return;
     }
-    const username = request.body.username;
-    const password = sha256(request.body.password);
-    const jwt = await issue(username, password);
-    if (jwt !== undefined) {
-        response.status(statusCode.OK).send(jwt);
-    } else {
-        response.status(statusCode.UNAUTHORIZED).send();
+    if (
+        !request.body.username ||
+        !request.body.password ||
+        !request.body.display_name
+    ) {
+        response.status(statusCode.BAD_REQUEST).send();
+        return;
     }
+    const user = new User();
+    user.uuid = uuid();
+    user.username = request.body.username;
+    user.password = sha256(request.body.password);
+    user.displayName = request.body.displayName;
+    await user.save();
+    response.status(statusCode.CREATED).send();
 });
 router.patch('/', async function (request: Request, response: Response) {
     if (!response.locals.user) {
         response.status(statusCode.FORBIDDEN).send();
+        return;
     }
     const user: User = response.locals.user;
-    user.display_name = request.body.display_name;
+    user.displayName = request.body.displayName;
     await user.save()
     response.status(statusCode.NO_CONTENT).send();
 });
 router.delete('/', async function (request: Request, response: Response) {
     if (!response.locals.user) {
         response.status(statusCode.FORBIDDEN).send();
+        return;
     }
     const user: User = response.locals.user;
     await user.destroy()

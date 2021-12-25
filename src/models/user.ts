@@ -1,7 +1,7 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 
 @Table
-export default class Article extends Model {
+export default class User extends Model {
     @Column
     uuid: string
 
@@ -12,17 +12,11 @@ export default class Article extends Model {
     password: string
 
     @Column
-    display_name: string
+    displayName: string
 
     @Column
-    device: string
+    createdAt: Date
 
     @Column
-    ip_address: string
-
-    @Column
-    created_at: number
-
-    @Column
-    updated_at: number
+    updatedAt: Date
 }
